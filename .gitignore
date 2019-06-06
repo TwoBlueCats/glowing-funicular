@@ -106,3 +106,4 @@ venv.bak/
 # own
 .DS_Store
 .idea/
+glowing.wpr
