@@ -4,6 +4,15 @@ import tkinter as tk
 
 import graphics
 import mmenu
+import character
+
+person: typing.Optional[character.Character] = None
+
+
+def addGenerationPromt():
+    prompt = "Press <r> to roll again, <enter> to accept, <esc> to exit to menu."
+    tx, ty = graphics.CenterX(prompt) * graphics.charSize, (graphics.lineCnt - 7) * graphics.charSize
+    graphics.addTextShadow(prompt, tx, ty)
 
 
 def DisplayBindFunc(ev: tk.Event):
@@ -13,17 +22,18 @@ def DisplayBindFunc(ev: tk.Event):
 
 def MainMenuBindFunc(ev: tk.Event, id_x: List[int]) -> None:
     sym = ev.__getattribute__("keysym")
-
+    print(sym, ev)
     if sym == "Return":
-        if id_x == 0:
-            pass  # new game
-        elif id_x == 1:
+        if id_x == [0]:
+            graphics.after(10, CharacterGeneration)
+        elif id_x == [1]:
             pass  # load game
-        elif id_x == 2:
+        elif id_x == [2]:
             pass  # instructions
-        elif id_x == 3:
+        elif id_x == [3]:
+            print(id_x)
             graphics.destroyEvent(ev)
-        graphics.after(10, nextFunc)
+        return
 
     if sym == "Up":
         id_x[0] = (id_x[0] - 1) % 4
@@ -33,12 +43,28 @@ def MainMenuBindFunc(ev: tk.Event, id_x: List[int]) -> None:
         graphics.after(1, mmenu.DrawMenu, id_x[0])
 
 
+def CharacterGenerationBundFunc(ev: tk.Event, char: character.Character) -> None:
+    sym: str = ev.__getattribute__("keysym")
+
+    if sym.lower() == "r":
+        char.SelfRegenerate()
+        graphics.deleteAllText()
+        graphics.after(1, char.PrintStats)
+        graphics.after(1, addGenerationPromt)
+    if sym == "Return":
+        pass  # all is done
+        graphics.after(1, nextFunc)
+    if sym == "Escape":
+        graphics.after(1, MainMenu)
+
+
 def nextFunc():
     print("next function here")
     graphics.destroyEvent(tk.Event())
 
 
 def DisplyTitle() -> None:
+    graphics.gameClearBinds()
     graphics.setBgImage("./images/title.bmp")
     graphics.addTextCenter("Copyright (C) 2019, by Anikushin Anton", -2, color="yellow")
 
@@ -49,12 +75,34 @@ def DisplyTitle() -> None:
 
 def MainMenu():
     graphics.gameClearBinds()
+    graphics.setBgImage("./images/mainback.bmp")
+
     id_x = [0]
-    mmenu.MainMenu()
     mmenu.DrawMenu(id_x=id_x[0])
 
     graphics.addGameBind("<Escape>", graphics.destroyEvent)
     graphics.addGameBind("<Key>", lambda e: MainMenuBindFunc(e, id_x))
+
+
+def CharacterGeneration():
+    global person
+    graphics.gameClearBinds()
+    graphics.setBgImage("./images/charback.bmp")
+
+    if person:
+        del person
+
+    person = character.Character()
+
+    name = "Great Tester"
+    # print(tx, len(prompt), graphics.colsCnt, graphics.w)
+    person.SetName(name)
+    person.SelfRegenerate()
+
+    addGenerationPromt()
+    person.PrintStats()
+
+    graphics.addGameBind("<Key>", lambda e: CharacterGenerationBundFunc(e, person))
 
 
 graphics.init()
