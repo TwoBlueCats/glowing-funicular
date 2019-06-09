@@ -2,6 +2,7 @@ import typing
 from typing import Optional, Callable
 from PIL import Image, ImageTk
 import tkinter as tk
+from tkinter.font import Font
 from defs import *
 
 root: Optional[tk.Tk] = None
@@ -10,6 +11,7 @@ label_items: typing.List[tk.Label] = []
 image_ref: Optional[tk.Image] = None
 running: Optional[Callable[[], None]] = None
 item_binds: typing.Dict[tk.Misc, typing.Set[str]] = dict()
+#my_font = Font(family="Courier", size=13)
 
 
 def __addBind(item: tk.Misc, seq: str, func: Callable[[tk.Event], None], *args, **kwargs) -> None:
@@ -24,6 +26,8 @@ def __clearBind(item: tk.Misc):
 
 
 def __destroy(item: tk.Misc):
+    if item == bg_canvas:
+        label_items.clear()
     item_binds.pop(item)
     for child in item.winfo_children():
         __destroy(child)
@@ -66,7 +70,7 @@ def setBgImage(image_name: str) -> None:
     img = img.resize((w, h), Image.ANTIALIAS)
     image_ref = ImageTk.PhotoImage(img)
 
-    root.geometry("%dx%d" % (w, h))
+    root.geometry("%dx%d+30+30" % (w, h))
 
     bg_canvas = tk.Canvas(width=w, height=h, bg='black')
     item_binds[bg_canvas] = set()
@@ -77,9 +81,19 @@ def setBgImage(image_name: str) -> None:
     root.update_idletasks()
 
 
+def deleteAllText():
+    global label_items
+    global bg_canvas
+
+    for item in label_items:
+        bg_canvas.delete(item)
+    label_items.clear()
+
+
 def addText(text: str, x: int, y: int, color="black"):
     global label_items
-    bg_canvas.create_text(x, y, text=text, fill=color, anchor='nw')
+    label_items.append(bg_canvas.create_text(x+2, y, text=text, fill=color, anchor='nw',
+                                             font=("Courier", 13)))
 
 
 def addTextCenter(text: str, line: int, color="black"):
@@ -89,6 +103,11 @@ def addTextCenter(text: str, line: int, color="black"):
     x_pos = CenterX(text) * charSize
 
     addText(text, x_pos, line * charSize, color=color)
+
+
+def addTextShadow(text: str, x: int, y: int, color: str = "white"):
+    addText(text, x + 1, y + 1, color="black")
+    addText(text, x, y, color=color)
 
 
 def addGameBind(sequence: str, func: Callable[[tk.Event], None], *args, **kwargs) -> None:
@@ -110,10 +129,12 @@ def start() -> None:
     global root
     if running:
         root.after(100, running)
-    root.mainloop()
+    if root:
+        root.mainloop()
     print("Mainloop ended")
 
 
 def after(delay, func, *args, **kwargs):
     global root
-    root.after(delay, func, *args, **kwargs)
+    if root:
+        root.after(delay, func, *args, **kwargs)

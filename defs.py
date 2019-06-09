@@ -4,11 +4,11 @@ lineCnt = h // charSize
 colsCnt = w // charSize
 
 
-def CenterX(text) -> int:
+def CenterX(text: str) -> int:
     return colsCnt // 2 - len(text) // 2
 
 
-def CenterY(n) -> int:
+def CenterY(n: int) -> int:
     return lineCnt // 2 - n // 2
 
 
