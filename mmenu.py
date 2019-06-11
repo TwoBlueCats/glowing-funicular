@@ -1,21 +1,23 @@
 from enum import Enum
 import graphics
 from defs import *
+from typing import Tuple
 
-MMenuItems = ["New Game    ",
-              "Load Game   ",
-              "Instructions",
-              "Quit        "
-              ]
-mid_x = CenterX(sorted(MMenuItems, key=lambda x: -len(x))[0])
-mid_y = CenterY(len(MMenuItems) * 2)
+MMenuItems: Tuple[str, str, str, str] = ("New Game    ",
+                                         "Load Game   ",
+                                         "Instructions",
+                                         "Quit        "
+                                         )
+
+mid_x: int = CenterX(sorted(MMenuItems, key=lambda x: -len(x))[0])
+mid_y: int = CenterY(len(MMenuItems) * 2)
 
 
 def GetMenuItem(item: str) -> int:
     return MMenuItems.index(item)
 
 
-def DrawMenu(id_x: int = 0, x=mid_x, y=mid_y):
+def DrawMenu(id_x: int = 0, x: int = mid_x, y: int = mid_y) -> None:
     colors = ["gray", "white"]
     graphics.deleteAllText()
     for i in range(len(MMenuItems)):

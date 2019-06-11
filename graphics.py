@@ -6,15 +6,17 @@ from tkinter.font import Font
 from defs import *
 
 root: Optional[tk.Tk] = None
-bg_canvas: Optional[tk.Label] = None
+bg_canvas: Optional[tk.Canvas] = None
 label_items: typing.List[tk.Label] = []
 image_ref: Optional[tk.Image] = None
 running: Optional[Callable[[], None]] = None
 item_binds: typing.Dict[tk.Misc, typing.Set[str]] = dict()
-#my_font = Font(family="Courier", size=13)
+# my_font = Font(family="Courier", size=13)
 
 
-def __addBind(item: tk.Misc, seq: str, func: Callable[[tk.Event], None], *args, **kwargs) -> None:
+def __addBind(item: Optional[tk.Misc], seq: str, func: Callable[[tk.Event], None], *args, **kwargs) -> None:
+    if item is None:
+        return
     item.bind(seq, func)
     item_binds[item].add(seq)
 
@@ -25,7 +27,9 @@ def __clearBind(item: tk.Misc):
     item_binds[item].clear()
 
 
-def __destroy(item: tk.Misc):
+def __destroy(item: Optional[tk.Misc]):
+    if item is None:
+        return
     if item == bg_canvas:
         label_items.clear()
     item_binds.pop(item)
@@ -48,7 +52,7 @@ def init() -> None:
 
     root = tk.Tk()
     item_binds[root] = set()
-    root.title("Glowing funicular")
+    root.title("Glowing funicular dungeon")
 
     bg_canvas = tk.Canvas()
     item_binds[bg_canvas] = set()
@@ -63,6 +67,9 @@ def setBgImage(image_name: str) -> None:
     global root
     global bg_canvas
     global image_ref
+
+    if root is None:
+        init()
 
     __destroy(bg_canvas)
 
@@ -92,7 +99,7 @@ def deleteAllText():
 
 def addText(text: str, x: int, y: int, color="black"):
     global label_items
-    label_items.append(bg_canvas.create_text(x+2, y, text=text, fill=color, anchor='nw',
+    label_items.append(bg_canvas.create_text(x + 2, y, text=text, fill=color, anchor='nw',
                                              font=("Courier", 13)))
 
 

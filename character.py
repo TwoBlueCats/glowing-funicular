@@ -34,55 +34,55 @@ class CharacterInfo:
         self.loc_y: int = 0
 
     @property
-    def str(self):
+    def str(self) -> int:
         return self.strength[0]
 
     @property
-    def sta(self):
+    def sta(self) -> int:
         return self.stamina[0]
 
     @property
-    def dex(self):
+    def dex(self) -> int:
         return self.dexterity[0]
 
     @property
-    def agi(self):
+    def agi(self) -> int:
         return self.agility[0]
 
     @property
-    def int(self):
+    def intel(self) -> int:
         return self.intelligence[0]
 
     @property
-    def unarmed(self):
+    def unarmed(self) -> int:
         return self.unarmed_combat[0]
 
     @property
-    def armed(self):
+    def armed(self) -> int:
         return self.armed_combat[0]
 
     @property
-    def projectile(self):
+    def projectile(self) -> int:
         return self.projectile_combat[0]
 
     @property
-    def magic(self):
+    def magic(self) -> int:
         return self.magic_combat[0]
 
     @property
-    def defense(self):
+    def defense(self) -> int:
         return self.combat_defense[0]
 
     @property
-    def mag_def(self):
+    def mag_def(self) -> int:
         return self.magic_defense[0]
 
 
 class Character:
     def __init__(self):
-        self._info = CharacterInfo()
+        self._info: CharacterInfo = CharacterInfo()
 
-    def PrintStats(self, back: bool = False):
+    def PrintStats(self, back: bool = False) -> None:
         if back:
             graphics.setBgImage("./images/charback.bmp")
         local_title = f"{self._info.name.strip()}: Attributes and Skills"
@@ -98,7 +98,7 @@ class Character:
         messages += [f"Stamina:        {self._info.sta}"]
         messages += [f"Dexterity:      {self._info.dex}"]
         messages += [f"Agility:        {self._info.agi}"]
-        messages += [f"Intelligence:   {self._info.int}"]
+        messages += [f"Intelligence:   {self._info.intel}"]
         messages += [f"Hit Points:     {self._info.currHp}"]
 
         messages += [f"Unarmed Combat:      {self._info.unarmed}"]
@@ -118,10 +118,10 @@ class Character:
             row += mes.startswith("Hit")
             row += mes.startswith("Magic Defense")
 
-    def SetName(self, name):
+    def SetName(self, name: str) -> None:
         self._info.name = name
 
-    def SelfRegenerate(self):
+    def SelfRegenerate(self) -> None:
         self._info.strength[0] = random.randint(1, 20)
         self._info.stamina[0] = random.randint(1, 20)
         self._info.dexterity[0] = random.randint(1, 20)
@@ -133,10 +133,10 @@ class Character:
 
         self._info.unarmed_combat[0] = self._info.str + self._info.agi
         self._info.armed_combat[0] = self._info.str + self._info.dex
-        self._info.projectile_combat[0] = self._info.dex + self._info.int
-        self._info.magic_combat[0] = self._info.int + self._info.sta
+        self._info.projectile_combat[0] = self._info.dex + self._info.intel
+        self._info.magic_combat[0] = self._info.intel + self._info.sta
         self._info.combat_defense[0] = self._info.str + self._info.agi
-        self._info.magic_defense[0] = self._info.agi + self._info.int
+        self._info.magic_defense[0] = self._info.agi + self._info.intel
 
         self._info.currXp = random.randint(100, 200)
         self._info.totXp = self._info.currXp

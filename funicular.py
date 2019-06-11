@@ -9,19 +9,19 @@ import character
 person: typing.Optional[character.Character] = None
 
 
-def addGenerationPromt():
+def addGenerationPromt() -> None:
     prompt = "Press <r> to roll again, <enter> to accept, <esc> to exit to menu."
     tx, ty = graphics.CenterX(prompt) * graphics.charSize, (graphics.lineCnt - 7) * graphics.charSize
     graphics.addTextShadow(prompt, tx, ty)
 
 
-def DisplayBindFunc(ev: tk.Event):
+def DisplayBindFunc(ev: tk.Event) -> None:
     print(ev)
     graphics.after(10, MainMenu)
 
 
 def MainMenuBindFunc(ev: tk.Event, id_x: List[int]) -> None:
-    sym = ev.__getattribute__("keysym")
+    sym: str = ev.__getattribute__("keysym")
     print(sym, ev)
     if sym == "Return":
         if id_x == [0]:
@@ -43,7 +43,7 @@ def MainMenuBindFunc(ev: tk.Event, id_x: List[int]) -> None:
         graphics.after(1, mmenu.DrawMenu, id_x[0])
 
 
-def CharacterGenerationBundFunc(ev: tk.Event, char: character.Character) -> None:
+def CharacterGenerationBindFunc(ev: tk.Event, char: character.Character) -> None:
     sym: str = ev.__getattribute__("keysym")
 
     if sym.lower() == "r":
@@ -58,7 +58,7 @@ def CharacterGenerationBundFunc(ev: tk.Event, char: character.Character) -> None
         graphics.after(1, MainMenu)
 
 
-def nextFunc():
+def nextFunc() -> None:
     print("next function here")
     graphics.destroyEvent(tk.Event())
 
@@ -68,23 +68,22 @@ def DisplyTitle() -> None:
     graphics.setBgImage("./images/title.bmp")
     graphics.addTextCenter("Copyright (C) 2019, by Anikushin Anton", -2, color="yellow")
 
-    done = False
     graphics.addGameBind("<Escape>", graphics.destroyEvent)
     graphics.addGameBind("<Key>", DisplayBindFunc)
 
 
-def MainMenu():
+def MainMenu() -> None:
     graphics.gameClearBinds()
     graphics.setBgImage("./images/mainback.bmp")
 
-    id_x = [0]
+    id_x: List[int] = [0]
     mmenu.DrawMenu(id_x=id_x[0])
 
     graphics.addGameBind("<Escape>", graphics.destroyEvent)
     graphics.addGameBind("<Key>", lambda e: MainMenuBindFunc(e, id_x))
 
 
-def CharacterGeneration():
+def CharacterGeneration() -> None:
     global person
     graphics.gameClearBinds()
     graphics.setBgImage("./images/charback.bmp")
@@ -94,7 +93,7 @@ def CharacterGeneration():
 
     person = character.Character()
 
-    name = "Great Tester"
+    name: str = "Great Tester"
     # print(tx, len(prompt), graphics.colsCnt, graphics.w)
     person.SetName(name)
     person.SelfRegenerate()
@@ -102,7 +101,7 @@ def CharacterGeneration():
     addGenerationPromt()
     person.PrintStats()
 
-    graphics.addGameBind("<Key>", lambda e: CharacterGenerationBundFunc(e, person))
+    graphics.addGameBind("<Key>", lambda e: CharacterGenerationBindFunc(e, person))
 
 
 graphics.init()
