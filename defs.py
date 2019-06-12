@@ -1,8 +1,8 @@
 import typing
 
-# w, h = 680, 480
-w: int = 850
-h: int = 600
+w: int = 680   # 850
+h: int = 480   # 600
+
 charSize: int = 8
 lineCnt: int = h // charSize
 colsCnt: int = w // charSize
