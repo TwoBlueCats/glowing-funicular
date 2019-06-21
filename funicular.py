@@ -7,7 +7,7 @@ import mmenu
 import character
 from wrapper import MutableWrapper
 
-person: typing.Optional[character.Character] = None
+person: MutableWrapper = MutableWrapper()
 
 
 def addGenerationPromt() -> None:
@@ -90,9 +90,9 @@ def CharacterGeneration() -> None:
     graphics.setBgImage("./images/charback.bmp")
 
     if person:
-        del person
+        del person.value
 
-    person = character.Character()
+    person.value = character.Character()
 
     name: str = "Great Tester"
     # print(tx, len(prompt), graphics.colsCnt, graphics.w)

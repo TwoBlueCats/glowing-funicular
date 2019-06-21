@@ -26,6 +26,13 @@ class MutableWrapper(list):
     def value(self, val):
         self.Set(val)
 
+    def Clear(self):
+        del self.__value
+        self.__value = None
+
+    def __delitem__(self, key):
+        self.Clear()
+
     def __setitem__(self, key, value):
         return self.Set(value)
 
@@ -42,3 +49,12 @@ class MutableWrapper(list):
         if isinstance(other, MutableWrapper):
             other = other.Get()
         return self.__value < other
+
+    def __getattr__(self, item):
+        return self.__value.__getattribute__(item)
+
+    def __bool__(self):
+        return bool(self.value)
+
+    def __del__(self):
+        self.Clear()
