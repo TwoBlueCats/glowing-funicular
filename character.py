@@ -9,6 +9,7 @@ from defs import *
 class CharacterInfo:
     def __init__(self):
         self.name: str = ""
+        """ Basic """
         self.strength: List[int] = [0, 0]
         self.stamina: List[int] = [0, 0]
         self.dexterity: List[int] = [0, 0]
@@ -18,6 +19,7 @@ class CharacterInfo:
         self.currHp: int = 0
         self.maxHp: int = 0
 
+        """ Calculated """
         self.unarmed_combat: List[int] = [0, 0]
         self.armed_combat: List[int] = [0, 0]
         self.projectile_combat: List[int] = [0, 0]
@@ -37,21 +39,41 @@ class CharacterInfo:
     def str(self) -> int:
         return self.strength[0]
 
+    @str.setter
+    def str(self, val: int):
+        self.strength[0] = val
+
     @property
     def sta(self) -> int:
         return self.stamina[0]
+
+    @sta.setter
+    def sta(self, val: int):
+        self.stamina[0] = val
 
     @property
     def dex(self) -> int:
         return self.dexterity[0]
 
+    @dex.setter
+    def dex(self, val: int):
+        self.dexterity[0] = val
+
     @property
     def agi(self) -> int:
         return self.agility[0]
 
+    @agi.setter
+    def agi(self, val: int):
+        self.agi[0] = val
+
     @property
     def intel(self) -> int:
         return self.intelligence[0]
+
+    @intel.setter
+    def intel(self, val: int):
+        self.intelligence[0] = val
 
     @property
     def unarmed(self) -> int:
@@ -76,6 +98,14 @@ class CharacterInfo:
     @property
     def mag_def(self) -> int:
         return self.magic_defense[0]
+
+    def recalculate(self):  # recalculate secondary skills
+        self.unarmed_combat[0] = self.str + self.agi
+        self.armed_combat[0] = self.str + self.dex
+        self.projectile_combat[0] = self.dex + self.intel
+        self.magic_combat[0] = self.intel + self.sta
+        self.combat_defense[0] = self.str + self.agi
+        self.magic_defense[0] = self.agi + self.intel
 
 
 class Character:
@@ -131,12 +161,7 @@ class Character:
         self._info.currHp = self._info.str + self._info.sta
         self._info.maxHp = self._info.currHp
 
-        self._info.unarmed_combat[0] = self._info.str + self._info.agi
-        self._info.armed_combat[0] = self._info.str + self._info.dex
-        self._info.projectile_combat[0] = self._info.dex + self._info.intel
-        self._info.magic_combat[0] = self._info.intel + self._info.sta
-        self._info.combat_defense[0] = self._info.str + self._info.agi
-        self._info.magic_defense[0] = self._info.agi + self._info.intel
+        self._info.recalculate()
 
         self._info.currXp = random.randint(100, 200)
         self._info.totXp = self._info.currXp
