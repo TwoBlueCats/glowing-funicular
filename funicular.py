@@ -5,6 +5,7 @@ import tkinter as tk
 import graphics
 import mmenu
 import character
+from wrapper import MutableWrapper
 
 person: typing.Optional[character.Character] = None
 
@@ -20,27 +21,27 @@ def DisplayBindFunc(ev: tk.Event) -> None:
     graphics.after(10, MainMenu)
 
 
-def MainMenuBindFunc(ev: tk.Event, id_x: List[int]) -> None:
+def MainMenuBindFunc(ev: tk.Event, id_x: MutableWrapper) -> None:
     sym: str = ev.__getattribute__("keysym")
     print(sym, ev)
     if sym == "Return":
-        if id_x == [0]:
+        if id_x == 0:
             graphics.after(10, CharacterGeneration)
-        elif id_x == [1]:
+        elif id_x == 1:
             pass  # load game
-        elif id_x == [2]:
+        elif id_x == 2:
             pass  # instructions
-        elif id_x == [3]:
+        elif id_x == 3:
             print(id_x)
             graphics.destroyEvent(ev)
         return
 
     if sym == "Up":
         id_x[0] = (id_x[0] - 1) % 4
-        graphics.after(1, mmenu.DrawMenu, id_x[0])
+        graphics.after(1, mmenu.DrawMenu, id_x.value)
     if sym == "Down":
         id_x[0] = (id_x[0] + 1) % 4
-        graphics.after(1, mmenu.DrawMenu, id_x[0])
+        graphics.after(1, mmenu.DrawMenu, id_x.value)
 
 
 def CharacterGenerationBindFunc(ev: tk.Event, char: character.Character) -> None:
@@ -76,8 +77,8 @@ def MainMenu() -> None:
     graphics.gameClearBinds()
     graphics.setBgImage("./images/mainback.bmp")
 
-    id_x: List[int] = [0]
-    mmenu.DrawMenu(id_x=id_x[0])
+    id_x: MutableWrapper = MutableWrapper(0)
+    mmenu.DrawMenu(id_x=id_x.value)
 
     graphics.addGameBind("<Escape>", graphics.destroyEvent)
     graphics.addGameBind("<Key>", lambda e: MainMenuBindFunc(e, id_x))
