@@ -5,12 +5,15 @@ import tkinter as tk
 from tkinter.font import Font
 from defs import *
 
+LABEL = tk.Label
 root: Optional[tk.Tk] = None
 bg_canvas: Optional[tk.Canvas] = None
-label_items: typing.List[tk.Label] = []
+label_items: typing.List[LABEL] = []
 image_ref: Optional[tk.Image] = None
 running: Optional[Callable[[], None]] = None
 item_binds: typing.Dict[tk.Misc, typing.Set[str]] = dict()
+
+
 # my_font = Font(family="Courier", size=13)
 
 
@@ -74,12 +77,12 @@ def setBgImage(image_name: str) -> None:
     __destroy(bg_canvas)
 
     img = Image.open(image_name)
-    img = img.resize((w, h), Image.ANTIALIAS)
+    img = img.resize((width, height), Image.ANTIALIAS)
     image_ref = ImageTk.PhotoImage(img)
 
-    root.geometry("%dx%d+30+30" % (w, h))
+    root.geometry("%dx%d+30+30" % (width, height))
 
-    bg_canvas = tk.Canvas(width=w, height=h, bg='black')
+    bg_canvas = tk.Canvas(width=width, height=height, bg='black')
     item_binds[bg_canvas] = set()
     bg_canvas.create_image(0, 0, image=image_ref, anchor='nw')
     bg_canvas.pack(side='top', fill='both', expand='yes')
@@ -97,19 +100,20 @@ def deleteAllText():
     label_items.clear()
 
 
-def addText(text: str, x: int, y: int, color="black"):
+def addText(text: str, x: int, y: int, color="black") -> LABEL:
     global label_items
     label_items.append(bg_canvas.create_text(x + 2, y, text=text, fill=color, anchor='nw',
                                              font=("Courier", 13)))
+    return label_items[-1]
 
 
-def addTextCenter(text: str, line: int, color="black"):
+def addTextCenter(text: str, line: int, color="black") -> LABEL:
     if line < 0:
         line -= 1
         line = lineCnt + line
     x_pos = CenterX(text) * charSize
 
-    addText(text, x_pos, line * charSize, color=color)
+    return addText(text, x_pos, line * charSize, color=color)
 
 
 def addTextShadow(text: str, x: int, y: int, color: str = "white"):
@@ -125,6 +129,11 @@ def addGameBind(sequence: str, func: Callable[[tk.Event], None], *args, **kwargs
 def gameClearBinds():
     global root
     __clearBind(root)
+
+
+def setGameBind(sequence: str, func: Callable[[tk.Event], None], *args, **kwargs) -> None:
+    gameClearBinds()
+    addGameBind(sequence, func, *args, **kwargs)
 
 
 def setRunningFunc(to_run: Optional[Callable[[], None]] = None):
@@ -145,3 +154,7 @@ def after(delay, func, *args, **kwargs):
     global root
     if root:
         root.after(delay, func, *args, **kwargs)
+
+
+def input_chars() -> str:
+    return input()

@@ -69,6 +69,7 @@ def DisplyTitle() -> None:
     graphics.setBgImage("./images/title.bmp")
     graphics.addTextCenter("Copyright (C) 2019, by Anikushin Anton", -2, color="yellow")
 
+    graphics.gameClearBinds()
     graphics.addGameBind("<Escape>", graphics.destroyEvent)
     graphics.addGameBind("<Key>", DisplayBindFunc)
 
@@ -80,6 +81,7 @@ def MainMenu() -> None:
     id_x: MutableWrapper = MutableWrapper(0)
     mmenu.DrawMenu(id_x=id_x.value)
 
+    graphics.gameClearBinds()
     graphics.addGameBind("<Escape>", graphics.destroyEvent)
     graphics.addGameBind("<Key>", lambda e: MainMenuBindFunc(e, id_x))
 
@@ -94,15 +96,15 @@ def CharacterGeneration() -> None:
 
     person.value = character.Character()
 
+    # name: str = graphics.input_chars()  # TODO Tk input here
     name: str = "Great Tester"
-    # print(tx, len(prompt), graphics.colsCnt, graphics.w)
     person.SetName(name)
     person.SelfRegenerate()
 
     addGenerationPromt()
     person.PrintStats()
 
-    graphics.addGameBind("<Key>", lambda e: CharacterGenerationBindFunc(e, person))
+    graphics.setGameBind("<Key>", lambda e: CharacterGenerationBindFunc(e, person))
 
 
 graphics.init()

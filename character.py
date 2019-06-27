@@ -65,7 +65,7 @@ class CharacterInfo:
 
     @agi.setter
     def agi(self, val: int):
-        self.agi[0] = val
+        self.agility[0] = val
 
     @property
     def intel(self) -> int:
@@ -171,3 +171,28 @@ class Character:
 
         self._info.loc_x = 0
         self._info.loc_y = 0
+
+    @property
+    def loc_x(self) -> int:
+        return self._info.loc_x
+
+    @loc_x.setter
+    def loc_x(self, x: int):
+        self._info.loc_x = x
+
+    @property
+    def loc_y(self) -> int:
+        return self._info.loc_y
+
+    @loc_y.setter
+    def loc_y(self, y: int):
+        self._info.loc_y = y
+
+    @property
+    def loc(self) -> Tuple[int, int]:
+        return self._info.loc_x, self._info.loc_y
+
+    @loc.setter
+    def loc(self, a: Tuple[int, int]):
+        self._info.loc_x = a[0]
+        self._info.loc_y = a[1]
